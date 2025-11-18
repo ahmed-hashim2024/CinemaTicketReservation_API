@@ -25,5 +25,15 @@ urlpatterns = [
     path('django/jsonresponcenomodel', views.no_rest_no_model),
     # 2 => # without REST and from model query Function Based View FBV
     path('django/jsonresponcefrommodel', views.no_rest_from_model),
+    # 3.1 => GET , POST from rest framework function based view @api_view
+    path('rest/fbv', views.FBV_List),
+    # 3.1 => GET , PUT , DELETE from rest framework function based view @api_view
+    path('rest/fbv/<int:pk>', views.FBV_pk),
+    # 4.1 => GET , POST from rest framework class  based view APIView
+    path('rest/cbv', views.CBV_list.as_view()),
+    # 4.2 => GET , PUT , DELETE from rest framework class  based view APIView
+    path('rest/cbv/<int:pk>', views.CBV_pk.as_view()),
+
+
 
 ]
