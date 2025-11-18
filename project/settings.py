@@ -38,10 +38,30 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'tickets',
 ]
 
-REST_FRAMEWORK ={}
+# global rest authentication username , password
+REST_FRAMEWORK ={
+
+    'DEFAULT_AUTHENTICATION_CLASSES':  # AUTHENTICATION  Token
+    ['rest_framework.authentication.TokenAuthentication'] ,
+
+    # 'DEFAULT_AUTHENTICATION_CLASSES':  # AUTHENTICATION
+    # ['rest_framework.authentication.BasicAuthentication'] ,
+
+    # 'DEFAULT_PERMISSION_CLASSES':        #PERMISSION
+    # ['rest_framework.permissions.IsAuthenticated'],
+
+    # AllowANY.  any one can access on api and make change
+    # IsAuthenticated.  any one have username , password can access on api and make change
+    # IsAdminuser.  admin only can access on api and make change
+    # IsAuthenticatedReadOnly.  any one have username , password can access on api and read only
+
+
+}
+# end global authentication
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

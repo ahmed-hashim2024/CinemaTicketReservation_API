@@ -9,7 +9,11 @@ from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework import generics , mixins ,viewsets
 
-
+# creat auth
+from rest_framework.authentication import BasicAuthentication , TokenAuthentication
+from rest_framework.permissions import IsAuthenticated 
+    
+# end auth 
 
 
 # 1 => without REST and no model query Function Based View FBV
@@ -171,6 +175,14 @@ class mixins_pk(mixins.RetrieveModelMixin , mixins.UpdateModelMixin , mixins.Des
 class generics_list(generics.ListCreateAPIView):
     queryset= Guest.objects.all()
     serializer_class = GuestSerializers
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]     
+
+    # # creat base auth
+
+    # authentication_classes = [BasicAuthentication]
+    # permission_classes = [IsAuthenticated]     
+    # # end auth 
 
 # 6.1 ==> Generics list GET , PUT , DELETE 
 class generics_pk(generics.RetrieveUpdateDestroyAPIView):
