@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'tickets',
 ]
 
-REST_FRAMEWORK = {}
+REST_FRAMEWORK ={}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

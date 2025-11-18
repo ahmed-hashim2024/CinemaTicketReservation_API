@@ -16,7 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from tickets import views
 
-urlpatterns = [
+urlpatterns = [ 
     path('admin/', admin.site.urls),
+
+    # 1 => # without REST and no model query Function Based View FBV
+    path('django/jsonresponcenomodel', views.no_rest_no_model),
+    # 2 => # without REST and from model query Function Based View FBV
+    path('django/jsonresponcefrommodel', views.no_rest_from_model),
+
 ]
