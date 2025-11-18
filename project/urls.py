@@ -15,8 +15,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path ,include
 from tickets import views
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter(trailing_slash=False)
+router.register('guests' , views.viewsets_gest)
+router.register('movies' , views.viewsets_movie)
+router.register('reservations' , views.viewsets_reservation)
+
 
 urlpatterns = [ 
     path('admin/', admin.site.urls),
@@ -33,7 +40,20 @@ urlpatterns = [
     path('rest/cbv', views.CBV_list.as_view()),
     # 4.2 => GET , PUT , DELETE from rest framework class  based view APIView
     path('rest/cbv/<int:pk>', views.CBV_pk.as_view()),
-
+    # 5.1 => GET , POST from rest framework mixins based view APIView
+    path('rest/mixins', views.mixins_list.as_view()),
+    # 5.2 => GET , PUT , DELETE from rest framework mixins  based view APIView
+    path('rest/mixins/<int:pk>', views.mixins_pk.as_view()),
+    # 6.1 => GET , POST from rest framework generics based view APIView
+    path('rest/generics', views.generics_list.as_view()),
+    # 6.2 => GET , PUT , DELETE from rest framework generics  based view APIView
+    path('rest/generics/<int:pk>', views.generics_pk.as_view()),
+    # 7 => GET , post , PUT , DELETE from rest framework viewsets based view APIView
+    path('rest/viewsets/', include(router.urls)),
+    # 8 => find movie
+    path('fbv/findmovie', views.findmovie),
+    # 8 => create Reservation
+    path('fbv/createreservation' , views.new_reversation), 
 
 
 ]

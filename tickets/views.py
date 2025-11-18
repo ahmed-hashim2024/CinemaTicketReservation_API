@@ -2,11 +2,13 @@ from django.shortcuts import render
 from django.http.response import JsonResponse 
 from .models import Guest , Reservation , Movie
 from rest_framework.decorators import api_view
-from .serializers import GuestSerializers
+from .serializers import GuestSerializers ,ReservationSerializers , MovieSerializers
 from rest_framework.response import Response
 from rest_framework import status , filters 
 from rest_framework.views import APIView
 from django.http import Http404
+from rest_framework import generics , mixins ,viewsets
+
 
 
 
@@ -88,7 +90,7 @@ def FBV_pk( request , pk):
     # DELETE
     elif request.method == 'DELETE':
         guest.delete()
-        return Response(  status = status.HTTP_204_NO_CONTENT)
+        return Response( status = status.HTTP_204_NO_CONTENT)
 
 
 # 4 => Class based views rest_framework
@@ -137,3 +139,107 @@ class CBV_pk(APIView):
         gest.delete()
         return Response( status= status.HTTP_204_NO_CONTENT)
         
+
+# 5 ==> Mixins 
+# 5.1 ==> Mixins list 
+class mixins_list( mixins.ListModelMixin , mixins.CreateModelMixin , generics.GenericAPIView):
+    queryset = Guest.objects.all()
+    serializer_class = GuestSerializers
+
+    def get(self, request):
+        return self.list(request)
+    
+    def post(self , request):
+        return self.create(request)
+
+# 5.2 ==> Mixins GET , PUT , DELETE 
+class mixins_pk(mixins.RetrieveModelMixin , mixins.UpdateModelMixin , mixins.DestroyModelMixin , generics.GenericAPIView) :
+    queryset = Guest.objects.all()
+    serializer_class = GuestSerializers
+
+    def get (self , request , pk):
+        return self.retrieve(request)
+    
+    def put (self , request , pk):
+        return self.update(request)
+    
+    def delete (self , request , pk):
+        return self.destroy(request)
+    
+# 6 ==> Generics
+# 6.1 ==> Generics list GET , POST
+class generics_list(generics.ListCreateAPIView):
+    queryset= Guest.objects.all()
+    serializer_class = GuestSerializers
+
+# 6.1 ==> Generics list GET , PUT , DELETE 
+class generics_pk(generics.RetrieveUpdateDestroyAPIView):
+    queryset= Guest.objects.all()
+    serializer_class = GuestSerializers
+
+
+# 7 ==> ViewSets
+
+class viewsets_gest (viewsets.ModelViewSet):
+    queryset = Guest.objects.all()
+    serializer_class = GuestSerializers
+
+class viewsets_movie (viewsets.ModelViewSet):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializers
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['movie']
+
+class viewsets_reservation (viewsets.ModelViewSet):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializers
+
+
+# 8 ==> find movie
+@api_view(['GEt'])
+def findmovie(request):
+    movies = Movie.objects.filter(
+        hall = request.data ['hall'],
+        movie = request.data ['movie'],
+    )
+    serializer = MovieSerializers(movies , many = True)
+    return Response(serializer.data)
+
+
+# 9 ==>  create new reversation 
+
+@api_view(['post'])
+def new_reversation(request):
+
+    movie = Movie.objects.get(
+        movie = request.data['movie'],
+        hall = request.data['hall']
+    )
+    guest = Guest()
+    guest.name = request.data['name']
+    guest.mobile = request.data['mobile']
+    guest.save()
+
+    reservation = Reservation()
+    reservation.guest = guest
+    reservation.movie = movie
+    reservation.save()
+
+    return Response( status= status.HTTP_201_CREATED)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
